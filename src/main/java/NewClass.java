@@ -221,17 +221,18 @@ public class NewClass extends JFrame{                        //Клас базо
                 }
                 else if(SwingUtilities.isRightMouseButton(me))
                 {
-                    json_aglaes = new Gson().toJson(mcmp.getAglae(), new TypeToken<ArrayList<Rectangle2D>>(){}.getType());
-                    json_fishes = new Gson().toJson(mcmp.getFishes(), new TypeToken<ArrayList<Rectangle2D>>(){}.getType());
+
+                    json_aglaes = new Gson().toJson(mcmp.getAglae(), new TypeToken<ArrayList<Rectangle2D.Double>>(){}.getType());
+                    json_fishes = new Gson().toJson(mcmp.getFishes(), new TypeToken<ArrayList<Rectangle2D.Double>>(){}.getType());
                     mcmp.setAglae(new ArrayList<Rectangle2D>());
                     mcmp.setFishes(new ArrayList<Rectangle2D>());
+
                     repaint();
                 }
                 else if(SwingUtilities.isMiddleMouseButton(me))
                 {
-                    Object aglaes = new Gson().fromJson(json_aglaes, new TypeToken<ArrayList<Rectangle2D>>(){}.getType());
-//                    mcmp.setAglae();
-//                    mcmp.setFishes((ArrayList<Rectangle2D>) new Gson().fromJson(json_fishes, new TypeToken<ArrayList<Rectangle2D>>(){}.getType()));
+                    mcmp.setAglae((ArrayList<Rectangle2D>) new Gson().fromJson(json_aglaes, new TypeToken<ArrayList<Rectangle2D.Double>>(){}.getType()));
+                    mcmp.setFishes((ArrayList<Rectangle2D>) new Gson().fromJson(json_fishes, new TypeToken<ArrayList<Rectangle2D.Double>>(){}.getType()));
                     repaint();
                 }
             }
