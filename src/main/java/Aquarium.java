@@ -26,6 +26,7 @@ public class Aquarium extends Application {
             {
                 NewClass frame = new NewClass(DataClass.aglae_quantiy);
 
+
                 frame.setTitle("Акваріум");
 
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

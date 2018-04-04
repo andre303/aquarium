@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI.MouseHandler;
 
 public class NewClass extends JFrame{                        //Клас базового вікна
@@ -45,16 +44,37 @@ public class NewClass extends JFrame{                        //Клас базо
             this.aglae_quantity = aglae_quantity;
         }
 
+        public void setFishes(ArrayList<Rectangle2D> fishes) {
+            this.fishes = fishes;
+        }
+
+        public void setAglae(ArrayList<Rectangle2D> aglae) {
+            this.aglae = aglae;
+        }
+
         public MouseComponent(int aglae_quantity)
         {
             this.aglae_quantity = aglae_quantity;
             fishes = new ArrayList<Rectangle2D>();
             aglae = new ArrayList<Rectangle2D>();
+
             current = null;
 
-            addMouseListener(new MouseHandler());
+            addMouseListener(new MouseHandler(this));
             addMouseMotionListener(new MouseMotionHandler());
             addAglae();
+        }
+
+        public int getSIDELENGTH() {
+            return SIDELENGTH;
+        }
+
+        public ArrayList<Rectangle2D> getFishes() {
+            return fishes;
+        }
+
+        public ArrayList<Rectangle2D> getAglae() {
+            return aglae;
         }
 
         public void paintComponent(Graphics grphs){
@@ -125,6 +145,8 @@ public class NewClass extends JFrame{                        //Клас базо
         private class MouseMotionHandler implements MouseMotionListener
         {
 
+
+
             @Override
             public void mouseDragged(MouseEvent me) {
                 if(current != null)
@@ -181,16 +203,43 @@ public class NewClass extends JFrame{                        //Клас базо
         }
 
         private class MouseHandler extends MouseAdapter{
+
+            public MouseComponent mcmp;
+            String json_aglaes="";
+            String json_fishes="";
+
+            public MouseHandler(MouseComponent mcmp) {
+                this.mcmp = mcmp;
+            }
+
             @Override
             public void mousePressed(MouseEvent me){
-                current = find(me.getPoint());
-                if(current == null)
-                    add(me.getPoint());
+                if(SwingUtilities.isLeftMouseButton(me)) {
+                    current = find(me.getPoint());
+                    if (current == null)
+                        add(me.getPoint());
+                }
+                else if(SwingUtilities.isRightMouseButton(me))
+                {
+                    json_aglaes = new Gson().toJson(mcmp.getAglae(), new TypeToken<ArrayList<Rectangle2D>>(){}.getType());
+                    json_fishes = new Gson().toJson(mcmp.getFishes(), new TypeToken<ArrayList<Rectangle2D>>(){}.getType());
+                    mcmp.setAglae(new ArrayList<Rectangle2D>());
+                    mcmp.setFishes(new ArrayList<Rectangle2D>());
+                    repaint();
+                }
+                else if(SwingUtilities.isMiddleMouseButton(me))
+                {
+                    Object aglaes = new Gson().fromJson(json_aglaes, new TypeToken<ArrayList<Rectangle2D>>(){}.getType());
+//                    mcmp.setAglae();
+//                    mcmp.setFishes((ArrayList<Rectangle2D>) new Gson().fromJson(json_fishes, new TypeToken<ArrayList<Rectangle2D>>(){}.getType()));
+                    repaint();
+                }
             }
 
             @Override
             public void mouseClicked(MouseEvent me){
-                current = find(me.getPoint());
+
+                    current = find(me.getPoint());
 
                 //if(current != null && me.getClickCount() >= 2)
                 //remove(current);
